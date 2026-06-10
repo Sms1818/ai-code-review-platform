@@ -1,0 +1,6 @@
+.idea
+target
+.env
+*.log
+__pycache__
+venv
