@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: review-service
+
+  datasource:
+    url: jdbc:postgresql://aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres?sslmode=require&prepareThreshold=0
+    username: postgres.sppopedmcugmudjtyctd
+    password: Virat18181414$
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+server:
+  port: 8082

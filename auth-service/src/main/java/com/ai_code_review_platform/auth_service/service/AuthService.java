@@ -4,6 +4,8 @@ import com.ai_code_review_platform.auth_service.dto.AuthResponse;
 import com.ai_code_review_platform.auth_service.dto.LoginRequest;
 import com.ai_code_review_platform.auth_service.dto.RegisterRequest;
 import com.ai_code_review_platform.auth_service.entity.User;
+import com.ai_code_review_platform.auth_service.exception.InvalidCredentialsException;
+import com.ai_code_review_platform.auth_service.exception.UserAlreadyExistsException;
 import com.ai_code_review_platform.auth_service.repository.UserRepository;
 import com.ai_code_review_platform.auth_service.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class AuthService {
                 if (userRepository.findByEmail(
                                 request.getEmail()).isPresent()) {
 
-                        throw new RuntimeException(
+                        throw new UserAlreadyExistsException(
                                         "Email already exists");
                 }
 
@@ -54,7 +56,7 @@ public class AuthService {
 
                 User user = userRepository.findByEmail(
                                 request.getEmail()).orElseThrow(
-                                                () -> new RuntimeException(
+                                                () -> new InvalidCredentialsException(
                                                                 "Invalid credentials"));
 
                 boolean matches = passwordEncoder.matches(

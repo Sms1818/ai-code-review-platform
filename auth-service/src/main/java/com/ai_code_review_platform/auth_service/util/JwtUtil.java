@@ -1,5 +1,6 @@
 package com.ai_code_review_platform.auth_service.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
@@ -27,5 +28,46 @@ public class JwtUtil {
                                                                                 + 86400000))
                                 .signWith(key)
                                 .compact();
+        }
+
+        public String extractEmail(String token) {
+
+                return extractClaims(token)
+                                .getSubject();
+        }
+
+        public boolean validateToken(
+                        String token,
+                        String email) {
+
+                try {
+
+                        String extractedEmail = extractEmail(token);
+
+                        return extractedEmail.equals(email)
+                                        && !isTokenExpired(token);
+
+                } catch (Exception e) {
+
+                        return false;
+                }
+        }
+
+        private boolean isTokenExpired(
+                        String token) {
+
+                return extractClaims(token)
+                                .getExpiration()
+                                .before(new Date());
+        }
+
+        private Claims extractClaims(
+                        String token) {
+
+                return Jwts.parser()
+                                .verifyWith(key)
+                                .build()
+                                .parseSignedClaims(token)
+                                .getPayload();
         }
 }
