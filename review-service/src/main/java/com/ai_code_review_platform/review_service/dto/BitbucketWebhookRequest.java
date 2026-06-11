@@ -1,6 +1,7 @@
 package com.ai_code_review_platform.review_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -11,6 +12,7 @@ public class BitbucketWebhookRequest {
 
     private Repository repository;
 
+    @JsonProperty("pullrequest")
     private PullRequest pullRequest;
 
     @Data

@@ -1,6 +1,7 @@
 package com.ai_code_review_platform.review_service.service;
 
 import com.ai_code_review_platform.review_service.dto.BitbucketWebhookRequest;
+import com.ai_code_review_platform.review_service.dto.PullRequestEventMessage;
 import com.ai_code_review_platform.review_service.entity.PullRequestEvent;
 import com.ai_code_review_platform.review_service.producer.ReviewEventProducer;
 import com.ai_code_review_platform.review_service.repository.PullRequestEventRepository;
@@ -20,6 +21,14 @@ public class WebhookService {
 
     public void processPullRequestEvent(
             BitbucketWebhookRequest request) {
+
+        if (request.getPullRequest() == null) {
+
+            log.warn(
+                    "Pull Request data not found in webhook payload");
+
+            return;
+        }
 
         PullRequestEvent event = PullRequestEvent.builder()
                 .eventKey(request.getEventKey())
@@ -48,7 +57,27 @@ public class WebhookService {
 
         repository.save(event);
 
-        producer.publishReviewEvent("PR Created: " + event.getTitle());
+        PullRequestEventMessage message = PullRequestEventMessage.builder()
+                .pullRequestId(
+                        request.getPullRequest().getId())
+                .title(
+                        request.getPullRequest().getTitle())
+                .repositoryName(
+                        request.getRepository().getName())
+                .sourceBranch(
+                        request.getPullRequest().getSourceBranch())
+                .targetBranch(
+                        request.getPullRequest().getTargetBranch())
+                .author(
+                        request.getPullRequest()
+                                .getAuthor()
+                                .getDisplayName())
+                .cloneUrl(
+                        request.getRepository()
+                                .getCloneUrl())
+                .build();
+
+        producer.publishReviewEvent(message);
 
         log.info(
                 "Pull Request Event Saved Successfully: {}",

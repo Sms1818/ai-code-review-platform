@@ -4,6 +4,7 @@ import com.ai_code_review_platform.review_service.dto.BitbucketWebhookRequest;
 import com.ai_code_review_platform.review_service.service.WebhookService;
 import lombok.RequiredArgsConstructor;
 import com.ai_code_review_platform.review_service.producer.ReviewEventProducer;
+import com.ai_code_review_platform.review_service.dto.PullRequestEventMessage;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,20 @@ public class WebhookController {
 
     @GetMapping("/test-kafka")
     public ResponseEntity<String> testKafka() {
-        producer.publishReviewEvent("Test PR Event");
-        return ResponseEntity.ok("Kafka test event published");
+
+        producer.publishReviewEvent(
+
+                PullRequestEventMessage.builder()
+                        .pullRequestId(1)
+                        .title("Test PR")
+                        .repositoryName("ai-code-review")
+                        .sourceBranch("feature/test")
+                        .targetBranch("main")
+                        .author("Sahil")
+                        .cloneUrl("dummy-url")
+                        .build());
+
+        return ResponseEntity.ok(
+                "Kafka test event published");
     }
 }
