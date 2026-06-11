@@ -5,8 +5,8 @@ spring:
     bootstrap-servers: localhost:9092
 
     consumer:
-      group-id: ai-review-group
-      auto-offset-reset: earliest
+      group-id: ai-review-group-v2
+      auto-offset-reset: latest
 
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 

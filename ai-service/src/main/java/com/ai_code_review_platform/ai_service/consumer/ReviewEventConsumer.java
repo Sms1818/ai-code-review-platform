@@ -10,7 +10,7 @@ import com.ai_code_review_platform.ai_service.dto.PullRequestEventMessage;
 @Slf4j
 public class ReviewEventConsumer {
 
-    @KafkaListener(topics = "pr-review-events", groupId = "ai-review-group")
+    @KafkaListener(topics = "pr-review-events")
     public void consumeEvent(PullRequestEventMessage message) {
         log.info(
                 "Received PR Event: {}",
