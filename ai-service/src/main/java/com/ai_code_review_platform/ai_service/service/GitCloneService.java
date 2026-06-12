@@ -15,54 +15,68 @@ public class GitCloneService {
 
     public void cloneRepository(
             String repoUrl,
-            String branchName
-    ) {
+            String branchName) {
 
         try {
 
-            String localPath =
-                    "repositories/" + branchName;
+            String localPath = "repositories/" + branchName;
 
-<<<<<<< HEAD
-            SshdSessionFactory sshdSessionFactory =
-                    new SshdSessionFactory();
+            File repoDir = new File(localPath);
+            if (repoDir.exists()) {
+                deleteDirectory(repoDir);
+                log.info(
+                        "Existing repository deleted");
+            }
 
-            TransportConfigCallback transportConfigCallback =
-                    transport -> {
+            SshdSessionFactory sshdSessionFactory = new SshdSessionFactory();
 
-                        SshTransport sshTransport =
-                                (SshTransport) transport;
+            TransportConfigCallback transportConfigCallback = transport -> {
 
-                        sshTransport.setSshSessionFactory(
-                                sshdSessionFactory
-                        );
-                    };
+                SshTransport sshTransport = (SshTransport) transport;
 
-=======
->>>>>>> feature/test-webhook
+                sshTransport.setSshSessionFactory(
+                        sshdSessionFactory);
+            };
+
             Git.cloneRepository()
                     .setURI(repoUrl)
                     .setDirectory(new File(localPath))
                     .setBranch(branchName)
-<<<<<<< HEAD
                     .setTransportConfigCallback(
-                            transportConfigCallback
-                    )
-=======
->>>>>>> feature/test-webhook
+                            transportConfigCallback)
                     .call();
 
             log.info(
                     "Repository cloned successfully at {}",
-                    localPath
-            );
+                    localPath);
 
         } catch (Exception e) {
 
             log.error(
                     "Error cloning repository",
-                    e
-            );
+                    e);
         }
+    }
+
+    private void deleteDirectory(File directory) {
+
+        File[] files = directory.listFiles();
+
+        if (files != null) {
+
+            for (File file : files) {
+
+                if (file.isDirectory()) {
+
+                    deleteDirectory(file);
+
+                } else {
+
+                    file.delete();
+                }
+            }
+        }
+
+        directory.delete();
     }
 }
