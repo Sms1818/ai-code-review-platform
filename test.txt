@@ -16,3 +16,4 @@ clone test
 clone test
 ssh clone test
 ssh clone test
+ssh jgit fix
