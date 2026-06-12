@@ -25,12 +25,6 @@ public class GitCloneService {
                     .setURI(repoUrl)
                     .setDirectory(new File(localPath))
                     .setBranch(branchName)
-                    .setCredentialsProvider(
-                            new UsernamePasswordCredentialsProvider(
-                                    "sms1818-v",
-                                    "ATATT3xFfGF0opW-DZr_ckaXh0ZcbUi8BUbrpoWK-1uJ_Pv3NGBEruOaTFhE_w1uKbq-16hDvIjpTY32MoMmQHZQ4Xvt0oNcHuch0QJ12FnS-m0iaEuU-DjnzGKbx-SmPXupTzN-YD4WMT63mCiiGy5zzMDHYy5GcurtAjbsU6FdQtVsoT1kZQk=69CE6E44"
-                            )
-                    )
                     .call();
 
             log.info(
