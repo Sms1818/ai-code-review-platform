@@ -19,10 +19,10 @@ public class WebhookController {
 
     @PostMapping("/bitbucket")
     public ResponseEntity<String> handleWebhook(
-            @RequestBody BitbucketWebhookRequest request) {
+            @RequestBody String payload) {
 
-        webhookService.processPullRequestEvent(
-                request);
+        System.out.println(payload);
+        
 
         return ResponseEntity.ok(
                 "Webhook received successfully");
