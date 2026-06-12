@@ -19,3 +19,4 @@ ssh clone test
 ssh jgit fix
 ssh jgit fix
 ssh jgit fix
+diff generation fixed

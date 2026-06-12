@@ -17,7 +17,7 @@ public class GitDiffService {
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "git",
                     "diff",
-                    targetBranch);
+                    "origin/" + targetBranch);
 
             processBuilder.directory(new File(repoPath));
 

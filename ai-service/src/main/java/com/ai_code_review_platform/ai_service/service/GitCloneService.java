@@ -38,7 +38,7 @@ public class GitCloneService {
                         sshdSessionFactory);
             };
 
-            Git git= Git.cloneRepository()
+            Git git = Git.cloneRepository()
                     .setURI(repoUrl)
                     .setDirectory(new File(localPath))
                     .setBranch(branchName)
@@ -47,10 +47,9 @@ public class GitCloneService {
                     .call();
 
             git.fetch()
-                .setTransportConfigCallback(
-                    transportConfigCallback
-                )
-                .call();
+                    .setTransportConfigCallback(
+                            transportConfigCallback)
+                    .call();
 
             log.info(
                     "Repository cloned successfully at {}",
