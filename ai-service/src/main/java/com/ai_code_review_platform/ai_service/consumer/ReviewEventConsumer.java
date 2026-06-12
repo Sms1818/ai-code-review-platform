@@ -6,7 +6,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import com.ai_code_review_platform.ai_service.service.GitCloneService;
 import org.springframework.stereotype.Service;
 
-
 import lombok.AllArgsConstructor;
 import com.ai_code_review_platform.ai_service.dto.PullRequestEventMessage;
 
@@ -26,7 +25,7 @@ public class ReviewEventConsumer {
         gitCloneService.cloneRepository(
             message.getCloneUrl(),
             message.getSourceBranch()
-        )
+        );
     }
 
 }
