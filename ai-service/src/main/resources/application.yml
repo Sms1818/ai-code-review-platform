@@ -14,3 +14,4 @@ spring:
 
       properties:
         spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.ai_code_review_platform.ai_service.dto.PullRequestEventMessage
