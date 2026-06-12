@@ -1,56 +1,57 @@
 package com.ai_code_review_platform.review_service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class BitbucketWebhookRequest {
-
-    private String eventKey;
 
     private Repository repository;
 
-    @JsonProperty("pullrequest")
-    private PullRequest pullRequest;
+    private PullRequest pullrequest;
+
+    private Actor actor;
 
     @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Repository {
 
         private String name;
 
-        private String fullName;
-
-        private String cloneUrl;
+        private String full_name;
     }
 
     @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PullRequest {
 
         private Integer id;
 
         private String title;
 
-        private String description;
+        private Source source;
 
-        private String sourceBranch;
+        private Destination destination;
+    }
 
-        private String targetBranch;
+    @Data
+    public static class Source {
 
-        private Author author;
+        private Branch branch;
+    }
 
-        @Data
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class Author {
+    @Data
+    public static class Destination {
 
-            private String username;
+        private Branch branch;
+    }
 
-            private String displayName;
+    @Data
+    public static class Branch {
 
-            private String emailAddress;
-        }
+        private String name;
+    }
+
+    @Data
+    public static class Actor {
+
+        private String display_name;
     }
 }

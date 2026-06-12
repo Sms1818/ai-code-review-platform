@@ -18,32 +18,16 @@ public class WebhookController {
     private final ReviewEventProducer producer;
 
     @PostMapping("/bitbucket")
-    public ResponseEntity<String> handleWebhook(
-            @RequestBody BitbucketWebhookRequest request) {
+public ResponseEntity<String> handleWebhook(
+        @RequestBody BitbucketWebhookRequest request){
 
-        webhookService.processPullRequestEvent(
-                request);
+    webhookService.processPullRequestEvent(
+            request
+    );
 
-        return ResponseEntity.ok(
-                "Webhook received successfully");
-    }
+    return ResponseEntity.ok(
+            "Webhook received successfully"
+    );
+}
 
-    @GetMapping("/test-kafka")
-    public ResponseEntity<String> testKafka() {
-
-        producer.publishReviewEvent(
-
-                PullRequestEventMessage.builder()
-                        .pullRequestId(1)
-                        .title("Test PR")
-                        .repositoryName("ai-code-review")
-                        .sourceBranch("feature/test")
-                        .targetBranch("main")
-                        .author("Sahil")
-                        .cloneUrl("dummy-url")
-                        .build());
-
-        return ResponseEntity.ok(
-                "Kafka test event published");
-    }
 }

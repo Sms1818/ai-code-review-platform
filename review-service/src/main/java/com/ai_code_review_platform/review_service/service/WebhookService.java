@@ -20,67 +20,78 @@ public class WebhookService {
     private final ReviewEventProducer producer;
 
     public void processPullRequestEvent(
-            BitbucketWebhookRequest request) {
+        BitbucketWebhookRequest request) {
 
-        if (request.getPullRequest() == null) {
+    if (request.getPullrequest() == null) {
 
-            log.warn(
-                    "Pull Request data not found in webhook payload");
+        log.warn(
+                "Pull Request data not found in webhook payload");
 
-            return;
-        }
-
-        PullRequestEvent event = PullRequestEvent.builder()
-                .eventKey(request.getEventKey())
-                .repositoryName(
-                        request.getRepository()
-                                .getName())
-                .pullRequestId(
-                        request.getPullRequest()
-                                .getId())
-                .title(
-                        request.getPullRequest()
-                                .getTitle())
-                .author(
-                        request.getPullRequest()
-                                .getAuthor()
-                                .getDisplayName())
-                .sourceBranch(
-                        request.getPullRequest()
-                                .getSourceBranch())
-                .targetBranch(
-                        request.getPullRequest()
-                                .getTargetBranch())
-                .status("RECEIVED")
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        repository.save(event);
-
-        PullRequestEventMessage message = PullRequestEventMessage.builder()
-                .pullRequestId(
-                        request.getPullRequest().getId())
-                .title(
-                        request.getPullRequest().getTitle())
-                .repositoryName(
-                        request.getRepository().getName())
-                .sourceBranch(
-                        request.getPullRequest().getSourceBranch())
-                .targetBranch(
-                        request.getPullRequest().getTargetBranch())
-                .author(
-                        request.getPullRequest()
-                                .getAuthor()
-                                .getDisplayName())
-                .cloneUrl(
-                        request.getRepository()
-                                .getCloneUrl())
-                .build();
-
-        producer.publishReviewEvent(message);
-
-        log.info(
-                "Pull Request Event Saved Successfully: {}",
-                event.getId());
+        return;
     }
+
+    PullRequestEvent event = PullRequestEvent.builder()
+            .eventKey("pullrequest:created")
+            .repositoryName(
+                    request.getRepository()
+                            .getName())
+            .pullRequestId(
+                    request.getPullrequest()
+                            .getId())
+            .title(
+                    request.getPullrequest()
+                            .getTitle())
+            .author(
+                    request.getActor()
+                            .getDisplay_name())
+            .sourceBranch(
+                    request.getPullrequest()
+                            .getSource()
+                            .getBranch()
+                            .getName())
+            .targetBranch(
+                    request.getPullrequest()
+                            .getDestination()
+                            .getBranch()
+                            .getName())
+            .status("RECEIVED")
+            .createdAt(LocalDateTime.now())
+            .build();
+
+    repository.save(event);
+
+    PullRequestEventMessage message =
+            PullRequestEventMessage.builder()
+                    .pullRequestId(
+                            request.getPullrequest()
+                                    .getId())
+                    .title(
+                            request.getPullrequest()
+                                    .getTitle())
+                    .repositoryName(
+                            request.getRepository()
+                                    .getName())
+                    .sourceBranch(
+                            request.getPullrequest()
+                                    .getSource()
+                                    .getBranch()
+                                    .getName())
+                    .targetBranch(
+                            request.getPullrequest()
+                                    .getDestination()
+                                    .getBranch()
+                                    .getName())
+                    .author(
+                            request.getActor()
+                                    .getDisplay_name())
+                    .cloneUrl(
+                            "https://bitbucket.org/sms1818-v/ai-code-review.git")
+                    .build();
+
+    producer.publishReviewEvent(message);
+
+    log.info(
+            "Pull Request Event Saved Successfully: {}",
+            event.getId());
+}
 }
