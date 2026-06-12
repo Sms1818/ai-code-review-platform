@@ -23,6 +23,7 @@ public class GitCloneService {
             String localPath =
                     "repositories/" + branchName;
 
+<<<<<<< HEAD
             SshdSessionFactory sshdSessionFactory =
                     new SshdSessionFactory();
 
@@ -37,13 +38,18 @@ public class GitCloneService {
                         );
                     };
 
+=======
+>>>>>>> feature/test-webhook
             Git.cloneRepository()
                     .setURI(repoUrl)
                     .setDirectory(new File(localPath))
                     .setBranch(branchName)
+<<<<<<< HEAD
                     .setTransportConfigCallback(
                             transportConfigCallback
                     )
+=======
+>>>>>>> feature/test-webhook
                     .call();
 
             log.info(
