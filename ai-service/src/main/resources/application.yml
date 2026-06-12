@@ -1,0 +1,17 @@
+server:
+  port: 8083
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    consumer:
+      group-id: ai-review-group-v2
+      auto-offset-reset: latest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.ai_code_review_platform.ai_service.dto.PullRequestEventMessage
