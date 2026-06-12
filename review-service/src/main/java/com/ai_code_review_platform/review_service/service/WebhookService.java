@@ -85,7 +85,8 @@ public class WebhookService {
                             request.getActor()
                                     .getDisplay_name())
                     .cloneUrl(
-                            "https://bitbucket.org/sms1818-v/ai-code-review.git")
+                        "git@bitbucket.org:sms1818-v/ai-code-review.git"
+                        )
                     .build();
 
     producer.publishReviewEvent(message);
