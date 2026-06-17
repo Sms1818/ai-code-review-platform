@@ -1,11 +1,17 @@
 package com.ai_code_review_platform.ai_service.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import com.ai_code_review_platform.ai_service.client.GeminiClient;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AIReviewService {
+    private final GeminiClient geminiClient;
 
     public String generateReview(
             String gitDiff) {
@@ -18,14 +24,6 @@ public class AIReviewService {
             return "No code changes detected.";
         }
 
-        return """
-                AI Review Summary:
-
-                - Code structure looks clean
-                - Consider adding null checks
-                - Add proper exception handling
-                - Improve method naming consistency
-                - Add unit tests for new changes
-                """;
+        return geminiClient.reviewCode(gitDiff);
     }
 }

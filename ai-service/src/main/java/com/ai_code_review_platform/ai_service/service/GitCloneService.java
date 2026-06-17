@@ -1,13 +1,14 @@
 package com.ai_code_review_platform.ai_service.service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.transport.SshTransport;
 import org.eclipse.jgit.transport.sshd.SshdSessionFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
