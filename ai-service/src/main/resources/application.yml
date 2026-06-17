@@ -17,4 +17,4 @@ spring:
         spring.json.value.default.type: com.ai_code_review_platform.ai_service.dto.PullRequestEventMessage
 
 gemini:
-  api-key: AQ.Ab8RN6L6Bt1HiM07bMAReeVhQS23N3Zso7wyNoH-NaKU--l5JA
+  api-key: ${GEMINI_API_KEY}
