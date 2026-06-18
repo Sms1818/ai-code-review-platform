@@ -1,5 +1,8 @@
 package com.ai_code_review_platform.ai_service.client;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,41 +14,12 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-
 public class GeminiClient {
+
   private final WebClient webClient;
 
   @Value("${gemini.api-key}")
   private String apiKey;
-
-  public String testConnection() {
-    String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
-        + apiKey;
-
-    String requestBody = """
-        {
-          "contents": [
-            {
-              "parts": [
-                {
-                  "text": "Say hello in one sentence"
-                }
-              ]
-            }
-          ]
-        }
-        """;
-
-    String response = webClient.post()
-        .uri(url)
-        .header("Content-Type", "application/json")
-        .bodyValue(requestBody)
-        .retrieve()
-        .bodyToMono(String.class)
-        .block();
-
-    return response;
-  }
 
   public String reviewCode(String diff) {
 
@@ -55,42 +29,39 @@ public class GeminiClient {
     log.info("Diff length = {}", diff.length());
 
     String prompt = """
-        are a senior software engineer.
+        You are a senior software engineer.
 
-       iew the following git diff.
+        Review the following git diff.
 
-       us on:
-       ugs
-       erformance issues
-       ecurity concerns
-       ode quality
-       est practices
+        Focus on:
+        - Bugs
+        - Performance issues
+        - Security concerns
+        - Code quality
+        - Best practices
 
-        Diff:
+        For each issue provide:
+        1. Severity (HIGH/MEDIUM/LOW)
+        2. Explanation
+        3. Suggested Fix
 
-       
-       .formatted(diff);
-    
+        Git Diff:
 
-    String requestBody = """
-        {
-          "contents": [
-            {
-              "parts": [
-                {
-                  "text": "%s"
-                }
-              ]
-            }
-          ]
-        }
-        """.formatted(
-        prompt.replace("\"", "\\\"")
-            .replace("\n", "\\n"));
+        %s
+        """.formatted(diff);
+
+    Map<String, Object> requestBody = Map.of(
+        "contents",
+        List.of(
+            Map.of(
+                "parts",
+                List.of(
+                    Map.of(
+                        "text",
+                        prompt)))));
 
     return webClient.post()
         .uri(url)
-        .header("Content-Type", "application/json")
         .bodyValue(requestBody)
         .retrieve()
         .onStatus(
@@ -98,10 +69,13 @@ public class GeminiClient {
             response -> response.bodyToMono(String.class)
                 .flatMap(errorBody -> {
 
-                  log.error("Gemini Error Response: {}", errorBody);
+                  log.error(
+                      "Gemini Error Response: {}",
+                      errorBody);
 
                   return Mono.error(
-                      new RuntimeException(errorBody));
+                      new RuntimeException(
+                          errorBody));
                 }))
         .bodyToMono(String.class)
         .block();
