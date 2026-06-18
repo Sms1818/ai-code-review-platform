@@ -51,15 +51,14 @@ sequenceDiagram
 
 ## Services
 
-| Service | Port | Role |
-|---------|------|------|
-| **review-service** | `8082` | Receives Bitbucket webhooks, persists events, publishes to Kafka |
-| **ai-service** | `8083` | Consumes Kafka events, clones repo, generates diff, calls Gemini, posts PR comment |
-| **gateway-service** | `8080` | API gateway (routes auth + webhook paths) |
-| **auth-service** | `8081` | JWT authentication (optional, via gateway) |
-| **Kafka** | `9092` | Async messaging (`pr-review-events` topic) |
-| **Zookeeper** | `2181` | Kafka coordination |
-| **Redis** | `6379` | Available for future use |
+| Service             | Port   | Role                                                                               |
+| ------------------- | ------ | ---------------------------------------------------------------------------------- |
+| **review-service**  | `8082` | Receives Bitbucket webhooks, persists events, publishes to Kafka                   |
+| **ai-service**      | `8083` | Consumes Kafka events, clones repo, generates diff, calls Gemini, posts PR comment |
+| **gateway-service** | `8080` | API gateway (routes auth + webhook paths)                                          |
+| **auth-service**    | `8081` | JWT authentication (optional, via gateway)                                         |
+| **Kafka**           | `9092` | Async messaging (`pr-review-events` topic)                                         |
+| **Zookeeper**       | `2181` | Kafka coordination                                                                 |
 
 ---
 
@@ -99,12 +98,12 @@ export BITBUCKET_USERNAME=your-atlassian-email@example.com
 export BITBUCKET_PASSWORD=your-bitbucket-api-token
 ```
 
-| Variable | Used by | Description |
-|----------|---------|-------------|
-| `DB_PASSWORD` | review-service | PostgreSQL database password |
-| `GEMINI_API_KEY` | ai-service | Google AI Studio API key |
-| `BITBUCKET_USERNAME` | ai-service | Atlassian account email |
-| `BITBUCKET_PASSWORD` | ai-service | Bitbucket API token ([create here](https://id.atlassian.com/manage-profile/security/api-tokens)) |
+| Variable             | Used by        | Description                                                                                      |
+| -------------------- | -------------- | ------------------------------------------------------------------------------------------------ |
+| `DB_PASSWORD`        | review-service | PostgreSQL database password                                                                     |
+| `GEMINI_API_KEY`     | ai-service     | Google AI Studio API key                                                                         |
+| `BITBUCKET_USERNAME` | ai-service     | Atlassian account email                                                                          |
+| `BITBUCKET_PASSWORD` | ai-service     | Bitbucket API token ([create here](https://id.atlassian.com/manage-profile/security/api-tokens)) |
 
 ---
 
@@ -149,11 +148,11 @@ Copy the HTTPS forwarding URL (e.g. `https://abc123.ngrok-free.app`).
 
 In your Bitbucket repo → **Repository settings → Webhooks → Add webhook**:
 
-| Field | Value |
-|-------|-------|
-| **Title** | AI Code Review |
-| **URL** | `https://<your-ngrok-url>/api/webhooks/bitbucket` |
-| **Triggers** | Pull request created (optionally: updated) |
+| Field        | Value                                             |
+| ------------ | ------------------------------------------------- |
+| **Title**    | AI Code Review                                    |
+| **URL**      | `https://<your-ngrok-url>/api/webhooks/bitbucket` |
+| **Triggers** | Pull request created (optionally: updated)        |
 
 ### 6. Open a test pull request
 
@@ -234,15 +233,15 @@ ai-code-review-platform/
 
 ## Troubleshooting
 
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| `NoSuchMethodError: getLinks()` | Stale compiled classes | `./mvnw clean spring-boot:run` |
-| Webhook never arrives | Bitbucket can't reach localhost | Use ngrok; verify webhook URL |
-| Git clone fails | SSH key not configured | Run `ssh -T git@bitbucket.org` |
-| `401` from Bitbucket API | Invalid credentials | Check email + API token env vars |
-| Kafka connection refused | Infrastructure not running | `docker compose up -d` |
-| No ai-service logs | Consumer started before Kafka | Restart ai-service after Kafka is up |
-| Empty review | No diff detected | Verify source/target branches exist on remote |
+| Symptom                         | Likely cause                    | Fix                                           |
+| ------------------------------- | ------------------------------- | --------------------------------------------- |
+| `NoSuchMethodError: getLinks()` | Stale compiled classes          | `./mvnw clean spring-boot:run`                |
+| Webhook never arrives           | Bitbucket can't reach localhost | Use ngrok; verify webhook URL                 |
+| Git clone fails                 | SSH key not configured          | Run `ssh -T git@bitbucket.org`                |
+| `401` from Bitbucket API        | Invalid credentials             | Check email + API token env vars              |
+| Kafka connection refused        | Infrastructure not running      | `docker compose up -d`                        |
+| No ai-service logs              | Consumer started before Kafka   | Restart ai-service after Kafka is up          |
+| Empty review                    | No diff detected                | Verify source/target branches exist on remote |
 
 ---
 
