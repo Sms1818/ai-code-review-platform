@@ -36,8 +36,6 @@ public class ReviewEventConsumer {
                         String diff = gitDiffService.generateDiff(
                                         repoPath, message.getTargetBranch());
 
-                        log.info(diff);
-
                         String review = aiReviewService.generateReview(
                                         diff);
 
