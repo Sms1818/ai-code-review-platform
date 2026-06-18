@@ -54,23 +54,23 @@ public class GeminiClient {
 
     log.info("Diff length = {}", diff.length());
 
-    // String prompt = """
-    //     You are a senior software engineer.
+    String prompt = """
+        are a senior software engineer.
 
-    //     Review the following git diff.
+       iew the following git diff.
 
-    //     Focus on:
-    //     - Bugs
-    //     - Performance issues
-    //     - Security concerns
-    //     - Code quality
-    //     - Best practices
+       us on:
+       ugs
+       erformance issues
+       ecurity concerns
+       ode quality
+       est practices
 
-    //     Git Diff:
+        Diff:
 
-    //     %s
-    //     """.formatted(diff);
-    String prompt = "Say hello in one sentence";
+       
+       .formatted(diff);
+    
 
     String requestBody = """
         {
