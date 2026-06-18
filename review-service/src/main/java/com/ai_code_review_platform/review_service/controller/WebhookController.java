@@ -1,11 +1,17 @@
 package com.ai_code_review_platform.review_service.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ai_code_review_platform.review_service.dto.BitbucketWebhookRequest;
 import com.ai_code_review_platform.review_service.service.WebhookService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/webhooks")
@@ -13,20 +19,35 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class WebhookController {
 
-    private final WebhookService webhookService;
+        private final WebhookService webhookService;
 
-    @PostMapping("/bitbucket")
-    public ResponseEntity<String> handleWebhook(
-            @RequestBody BitbucketWebhookRequest request) {
+        private final ObjectMapper objectMapper;
 
-        log.info("WEBHOOK HITTTTT 🔥");
+        @PostMapping("/bitbucket")
+        public ResponseEntity<String> handleWebhook(
+                        @RequestBody BitbucketWebhookRequest request) {
 
-        webhookService.processPullRequestEvent(
-                request
-        );
+                try {
 
-        return ResponseEntity.ok(
-                "Webhook received successfully"
-        );
-    }
+                        log.info(
+                                        "RAW WEBHOOK:\n{}",
+                                        objectMapper
+                                                        .writerWithDefaultPrettyPrinter()
+                                                        .writeValueAsString(request));
+
+                } catch (Exception e) {
+
+                        log.error(
+                                        "Error logging webhook",
+                                        e);
+                }
+
+                log.info("WEBHOOK HITTTTT 🔥");
+
+                webhookService.processPullRequestEvent(
+                                request);
+
+                return ResponseEntity.ok(
+                                "Webhook received successfully");
+        }
 }
