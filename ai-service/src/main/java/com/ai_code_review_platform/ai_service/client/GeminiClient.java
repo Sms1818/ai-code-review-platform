@@ -5,88 +5,101 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class GeminiClient {
-    private final WebClient webClient;
+  private final WebClient webClient;
 
-    @Value("${gemini.api-key}")
-    private String apiKey;
+  @Value("${gemini.api-key}")
+  private String apiKey;
 
-    public String testConnection() {
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
-                + apiKey;
+  public String testConnection() {
+    String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
+        + apiKey;
 
-        String requestBody = """
+    String requestBody = """
+        {
+          "contents": [
+            {
+              "parts": [
                 {
-                  "contents": [
-                    {
-                      "parts": [
-                        {
-                          "text": "Say hello in one sentence"
-                        }
-                      ]
-                    }
-                  ]
+                  "text": "Say hello in one sentence"
                 }
-                """;
+              ]
+            }
+          ]
+        }
+        """;
 
-        String response = webClient.post()
-                .uri(url)
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+    String response = webClient.post()
+        .uri(url)
+        .header("Content-Type", "application/json")
+        .bodyValue(requestBody)
+        .retrieve()
+        .bodyToMono(String.class)
+        .block();
 
-        return response;
-    }
+    return response;
+  }
 
-    public String reviewCode(String diff) {
+  public String reviewCode(String diff) {
 
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
-                + apiKey;
+    String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
+        + apiKey;
 
-        String prompt = """
-                You are a senior software engineer.
+    log.info("Diff length = {}", diff.length());
 
-                Review the following git diff.
+    String prompt = """
+        You are a senior software engineer.
 
-                Focus on:
-                - Bugs
-                - Performance issues
-                - Security concerns
-                - Code quality
-                - Best practices
+        Review the following git diff.
 
-                Git Diff:
+        Focus on:
+        - Bugs
+        - Performance issues
+        - Security concerns
+        - Code quality
+        - Best practices
 
-                %s
-                """.formatted(diff);
+        Git Diff:
 
-        String requestBody = """
+        %s
+        """.formatted(diff);
+
+    String requestBody = """
+        {
+          "contents": [
+            {
+              "parts": [
                 {
-                  "contents": [
-                    {
-                      "parts": [
-                        {
-                          "text": "%s"
-                        }
-                      ]
-                    }
-                  ]
+                  "text": "%s"
                 }
-                """.formatted(
-                prompt.replace("\"", "\\\"")
-                        .replace("\n", "\\n"));
+              ]
+            }
+          ]
+        }
+        """.formatted(
+        prompt.replace("\"", "\\\"")
+            .replace("\n", "\\n"));
 
-        return webClient.post()
-                .uri(url)
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
+    return webClient.post()
+        .uri(url)
+        .header("Content-Type", "application/json")
+        .bodyValue(requestBody)
+        .retrieve()
+        .onStatus(
+            status -> status.isError(),
+            response -> response.bodyToMono(String.class)
+                .flatMap(errorBody -> {
+
+                  log.error("Gemini Error Response: {}", errorBody);
+
+                  return Mono.error(
+                      new RuntimeException(errorBody));
+                }))
+        .bodyToMono(String.class)
+        .block();
+  }
 }
