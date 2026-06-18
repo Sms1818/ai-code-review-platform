@@ -11,6 +11,10 @@ public class PullRequestEventMessage {
 
     private String repositoryName;
 
+    private String workspace;
+
+    private String repositorySlug;
+
     private String sourceBranch;
 
     private String targetBranch;

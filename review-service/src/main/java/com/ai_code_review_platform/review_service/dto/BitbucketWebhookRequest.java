@@ -1,5 +1,7 @@
 package com.ai_code_review_platform.review_service.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -17,6 +19,22 @@ public class BitbucketWebhookRequest {
         private String name;
 
         private String full_name;
+
+        private Links links;
+    }
+
+    @Data
+    public static class Links {
+
+        private List<CloneLink> clone;
+    }
+
+    @Data
+    public static class CloneLink {
+
+        private String name;
+
+        private String href;
     }
 
     @Data
