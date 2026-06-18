@@ -12,33 +12,85 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GitDiffService {
 
-    public String generateDiff(String repoPath, String targetBranch) {
+    public String generateDiff(
+            String repoPath,
+            String targetBranch) {
+
         try {
+
+            File repoDirectory = new File(repoPath);
+
+            ProcessBuilder branchBuilder = new ProcessBuilder(
+                    "git",
+                    "branch",
+                    "--show-current");
+
+            branchBuilder.directory(repoDirectory);
+
+            Process branchProcess = branchBuilder.start();
+
+            BufferedReader branchReader = new BufferedReader(
+                    new InputStreamReader(
+                            branchProcess.getInputStream()));
+
+            String currentBranch = branchReader.readLine();
+
+            log.info(
+                    "Current Branch = {}",
+                    currentBranch);
+
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "git",
                     "diff",
                     "origin/" + targetBranch);
 
-            processBuilder.directory(new File(repoPath));
+            processBuilder.directory(
+                    repoDirectory);
 
             Process process = processBuilder.start();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            process.getInputStream()));
 
             StringBuilder diff = new StringBuilder();
+
             String line;
 
             while ((line = reader.readLine()) != null) {
-                diff.append(line).append("\n");
+
+                diff.append(line)
+                        .append("\n");
             }
 
-            process.waitFor();
+            int exitCode = process.waitFor();
+
             log.info(
                     "Git diff generated successfully");
+
+            log.info(
+                    "Git diff exit code = {}",
+                    exitCode);
+
+            log.info(
+                    "Diff length = {}",
+                    diff.length());
+
+            if (!diff.isEmpty()) {
+
+                log.info(
+                        "First 1000 chars of diff:\n{}",
+                        diff.substring(
+                                0,
+                                Math.min(
+                                        1000,
+                                        diff.length())));
+            }
 
             return diff.toString();
 
         } catch (Exception e) {
+
             log.error(
                     "Error generating git diff",
                     e);
