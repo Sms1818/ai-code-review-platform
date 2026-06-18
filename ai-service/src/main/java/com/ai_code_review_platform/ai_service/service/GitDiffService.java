@@ -39,10 +39,35 @@ public class GitDiffService {
                     "Current Branch = {}",
                     currentBranch);
 
+            // Get merge base
+            ProcessBuilder mergeBaseBuilder = new ProcessBuilder(
+                    "git",
+                    "merge-base",
+                    "HEAD",
+                    "origin/" + targetBranch);
+
+            mergeBaseBuilder.directory(repoDirectory);
+
+            Process mergeBaseProcess = mergeBaseBuilder.start();
+
+            BufferedReader mergeBaseReader = new BufferedReader(
+                    new InputStreamReader(
+                            mergeBaseProcess.getInputStream()));
+
+            String mergeBaseCommit = mergeBaseReader.readLine();
+
+            mergeBaseProcess.waitFor();
+
+            log.info(
+                    "Merge Base Commit = {}",
+                    mergeBaseCommit);
+
+            // Generate actual PR diff
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "git",
                     "diff",
-                    "origin/" + targetBranch);
+                    mergeBaseCommit,
+                    "HEAD");
 
             processBuilder.directory(
                     repoDirectory);
