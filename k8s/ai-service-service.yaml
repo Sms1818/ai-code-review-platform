@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: ai-service
+  namespace: ai-review
+
+spec:
+  selector:
+    app: ai-service
+
+  ports:
+    - port: 8083
+      targetPort: 8083
