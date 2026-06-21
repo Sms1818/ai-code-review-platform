@@ -18,6 +18,12 @@ spec:
         app: ai-service
 
     spec:
+      volumes:
+        - name: ssh-keys
+          secret:
+            secretName: ssh-keys
+            defaultMode: 0400
+
       containers:
         - name: ai-service
 
@@ -27,6 +33,11 @@ spec:
 
           ports:
             - containerPort: 8083
+
+          volumeMounts:
+            - name: ssh-keys
+              mountPath: /root/.ssh
+              readOnly: true
 
           env:
             - name: GEMINI_API_KEY
